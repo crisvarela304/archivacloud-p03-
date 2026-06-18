@@ -15,3 +15,20 @@ class Settings(BaseSettings):
     aws_region: str = "us-west-2"
     aws_s3_bucket: str = "archivacloud-p03"
     presigned_url_expiration: int = 3600
+
+settings = Settings()
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s - %(message)s")
+logger = logging.getLogger("archivacloud")
+
+ALLOWED_EXT   = {"mp3", "wav"}
+ALLOWED_TYPES = {"audio/mpeg", "audio/wav", "audio/x-wav", "audio/wave"}
+MAX_BYTES     = 20 * 1024 * 1024
+
+class PresignedUrlRequest(BaseModel):
+    filename:     str = Field(..., min_length=1, max_length=255)
+    content_type: str
+    file_size:    int = Field(..., gt=0)
+    sha256:       str = Field(default="", max_length=64)
+
+    @field_validator("filename")
+    @classmethod
