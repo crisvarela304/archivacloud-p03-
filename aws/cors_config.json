@@ -1,0 +1,6 @@
+﻿{
+  "CORSRules": [
+    {
+      "ID": "ArchivaCloudP03Frontend",
+      "AllowedOrigins": ["http://localhost:5173"],
+      "AllowedMethods": ["PUT", "GET", "DELETE", "HEAD"],
