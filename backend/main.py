@@ -32,3 +32,21 @@ class PresignedUrlRequest(BaseModel):
 
     @field_validator("filename")
     @classmethod
+    def val_filename(cls, v):
+        ext = v.rsplit(".", 1)[-1].lower() if "." in v else ""
+        if ext not in ALLOWED_EXT:
+            raise ValueError(f"Extension no permitida: {ext}")
+        return v
+
+    @field_validator("content_type")
+    @classmethod
+    def val_content_type(cls, v):
+        if v.lower() not in ALLOWED_TYPES:
+            raise ValueError(f"Tipo no permitido: {v}")
+        return v.lower()
+
+    @field_validator("sha256")
+    @classmethod
+    def val_sha256(cls, v):
+        if v and len(v) not in (0, 64):
+            raise ValueError("sha256 debe ser cadena hexadecimal de 64 chars")
