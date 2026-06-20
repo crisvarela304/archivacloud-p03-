@@ -38,3 +38,23 @@ export default function App() {
   const [loading,  setLoading]  = useState(false)
   const [error,    setError]    = useState('')
   const [hash,     setHash]     = useState('')
+  const [status,   setStatus]   = useState('idle')
+  const [progress, setProgress] = useState(0)
+  const [dragging, setDragging] = useState(false)
+  const ref = useRef(null)
+
+  const fetchFiles = useCallback(async () => {
+    setLoading(true)
+    try { const { data } = await axios.get('/api/files'); setFiles(data) }
+    catch (e) { console.error(e) }
+    finally { setLoading(false) }
+  }, [])
+
+  useEffect(() => { fetchFiles() }, [fetchFiles])
+
+  const handle = useCallback(async (file) => {
+    setError(''); setHash(''); setProgress(0); setStatus('idle')
+    const ext = '.' + file.name.split('.').pop().toLowerCase()
+    if (!ALLOWED.includes(ext)) { setError('Solo MP3 y WAV'); return }
+    if (file.size > MAX_SIZE)    { setError('Maximo 20 MB'); return }
+    setStatus('hashing')
