@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+  html { font-family: system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  body { @apply bg-gray-950 text-gray-100 min-h-screen; }
+}
+
+@layer components {
+  .btn-danger { @apply px-3 py-1 text-red-400 text-xs rounded border border-red-600/30 hover:bg-red-600/20 transition-all; }
+  .tag { @apply inline-block px-2 py-0.5 bg-indigo-900/40 text-indigo-300 text-xs rounded font-mono; }
+}
