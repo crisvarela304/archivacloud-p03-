@@ -18,3 +18,23 @@ function uploadS3(url, file, hash, onProgress) {
     xhr.onerror = () => rej(new Error('Error de red'))
     xhr.open('PUT', url, true)
     xhr.setRequestHeader('Content-Type', file.type)
+    if (hash) xhr.setRequestHeader('x-amz-meta-sha256', hash)
+    xhr.send(file)
+  })
+}
+
+function fmtSize(b) {
+  if (b < 1024) return b + ' B'
+  if (b < 1024 * 1024) return (b / 1024).toFixed(1) + ' KB'
+  return (b / 1024 / 1024).toFixed(2) + ' MB'
+}
+function fmtDate(iso) {
+  if (!iso) return '-'
+  return new Date(iso).toLocaleString('es-CL', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+}
+
+export default function App() {
+  const [files,    setFiles]    = useState([])
+  const [loading,  setLoading]  = useState(false)
+  const [error,    setError]    = useState('')
+  const [hash,     setHash]     = useState('')
