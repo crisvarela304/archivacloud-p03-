@@ -58,3 +58,24 @@ export default function App() {
     if (!ALLOWED.includes(ext)) { setError('Solo MP3 y WAV'); return }
     if (file.size > MAX_SIZE)    { setError('Maximo 20 MB'); return }
     setStatus('hashing')
+    const h = await sha256(file)
+    setHash(h)
+    setStatus('uploading')
+    const ct = file.type || (file.name.endsWith('.mp3') ? 'audio/mpeg' : 'audio/wav')
+    try {
+      const { data } = await axios.post('/api/upload/presigned-url', {
+        filename: file.name, content_type: ct, file_size: file.size, sha256: h
+      })
+      await uploadS3(data.url, file, h, setProgress)
+      setStatus('done')
+      setTimeout(fetchFiles, 1200)
+    } catch (e) {
+      setError(e.response?.data?.detail || e.message)
+      setStatus('error')
+    }
+  }, [fetchFiles])
+
+  const onDrop = e => {
+    e.preventDefault(); setDragging(false)
+    if (e.dataTransfer.files?.[0]) handle(e.dataTransfer.files[0])
+  }
