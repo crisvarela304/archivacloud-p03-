@@ -4,3 +4,9 @@
       "ID": "ArchivaCloudP03Frontend",
       "AllowedOrigins": ["http://localhost:5173"],
       "AllowedMethods": ["PUT", "GET", "DELETE", "HEAD"],
+      "AllowedHeaders": ["Content-Type", "x-amz-meta-sha256", "Authorization"],
+      "ExposeHeaders": ["ETag", "x-amz-meta-sha256"],
+      "MaxAgeSeconds": 3600
+    }
+  ]
+}
