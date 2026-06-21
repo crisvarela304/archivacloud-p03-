@@ -79,3 +79,23 @@ export default function App() {
     e.preventDefault(); setDragging(false)
     if (e.dataTransfer.files?.[0]) handle(e.dataTransfer.files[0])
   }
+
+  return (
+    <div className="min-h-screen bg-gray-950 text-gray-100 p-8 max-w-5xl mx-auto">
+      <h1 className="text-2xl font-bold mb-1">ArchivaCloud</h1>
+      <p className="text-gray-500 text-sm mb-8">Pareja P-03 · archivacloud-p03 · us-west-2</p>
+
+      <div
+        className={"border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-colors mb-6 " +
+          (dragging ? "border-indigo-400 bg-indigo-950/20" : "border-gray-700 hover:border-indigo-500")}
+        onDrop={onDrop}
+        onDragOver={e => { e.preventDefault(); setDragging(true) }}
+        onDragLeave={() => setDragging(false)}
+        onClick={() => ref.current?.click()}
+      >
+        <input ref={ref} type="file" accept=".mp3,.wav" className="hidden"
+          onChange={e => { if (e.target.files?.[0]) handle(e.target.files[0]); e.target.value = '' }} />
+        <p className="font-medium">{dragging ? 'Suelta aqui' : 'Arrastra un archivo MP3 o WAV aqui'}</p>
+        <p className="text-gray-500 text-sm mt-1">maximo 20 MB</p>
+      </div>
+
