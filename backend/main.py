@@ -102,3 +102,20 @@ def generate_presigned_url(body: PresignedUrlRequest):
         url = s3.generate_presigned_url(
             ClientMethod="put_object", Params=params,
             ExpiresIn=settings.presigned_url_expiration, HttpMethod="PUT",
+        )
+    except ClientError as e:
+        code = e.response.get("Error", {}).get("Code", "Unknown")
+        logger.error("Error presigned URL: %s", code)
+        raise HTTPException(status_code=502, detail=f"Error S3: {code}")
+    return PresignedUrlResponse(url=url, key=key)
+
+class FileItem(BaseModel):
+    key: str
+    filename: str
+    size_bytes: int
+    last_modified: str
+    sha256: str = ""
+    download_url: str = ""
+
+@app.get("/api/files", response_model=list[FileItem])
+def list_files():
