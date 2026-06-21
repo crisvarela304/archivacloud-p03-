@@ -84,3 +84,21 @@ app.add_middleware(
     max_age=600,
 )
 
+@app.get("/healthz")
+def health():
+    return {"status": "healthy"}
+
+@app.post("/api/upload/presigned-url", response_model=PresignedUrlResponse)
+def generate_presigned_url(body: PresignedUrlRequest):
+    s3  = get_s3_client()
+    key = urllib.parse.quote(body.filename, safe="-_.~")
+    params: dict[str, Any] = {
+        "Bucket": settings.aws_s3_bucket, "Key": key,
+        "ContentType": body.content_type,
+    }
+    if body.sha256:
+        params["Metadata"] = {"sha256": body.sha256}
+    try:
+        url = s3.generate_presigned_url(
+            ClientMethod="put_object", Params=params,
+            ExpiresIn=settings.presigned_url_expiration, HttpMethod="PUT",
