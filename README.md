@@ -15,3 +15,20 @@ MVP de almacenamiento seguro de archivos de audio en AWS S3.
 - Backend: Python / FastAPI / Boto3
 - Frontend: React 18 / Vite 5 / Tailwind CSS
 
+## Correr backend
+```bash
+cd backend
+.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+uvicorn main:app --reload --port 8000
+```
+
+## Correr frontend
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+## Variables de entorno
+Copiar .env.example como ackend/.env y completar con credenciales AWS.
