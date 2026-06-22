@@ -99,3 +99,23 @@ export default function App() {
         <p className="text-gray-500 text-sm mt-1">maximo 20 MB</p>
       </div>
 
+      {status === 'hashing' && <p className="mb-4 text-indigo-400 text-sm">Calculando SHA-256...</p>}
+      {status === 'uploading' && (
+        <div className="mb-4">
+          <div className="flex justify-between text-sm mb-1">
+            <span className="text-gray-400">Subiendo archivo a S3...</span>
+            <span className="text-indigo-400 font-bold">{progress}%</span>
+          </div>
+          <div className="w-full bg-gray-800 rounded-full h-2">
+            <div className="bg-indigo-500 h-2 rounded-full transition-all" style={{ width: progress + '%' }} />
+          </div>
+        </div>
+      )}
+      {status === 'done'  && <p className="mb-4 text-emerald-400 text-sm">Archivo subido correctamente a S3</p>}
+      {error              && <p className="mb-4 text-red-400 text-sm">{error}</p>}
+      {hash               && <p className="mb-6 text-emerald-400 text-xs font-mono break-all">SHA-256: {hash}</p>}
+
+      <div className="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden">
+        <div className="flex justify-between items-center px-6 py-4 border-b border-gray-800">
+          <h2 className="font-semibold">Archivos <span className="text-gray-500 text-sm ml-1">({files.length})</span></h2>
+          <button onClick={fetchFiles} className="text-sm text-gray-400 hover:text-white transition-colors">
