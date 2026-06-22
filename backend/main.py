@@ -119,3 +119,20 @@ class FileItem(BaseModel):
 
 @app.get("/api/files", response_model=list[FileItem])
 def list_files():
+    s3 = get_s3_client()
+    try:
+        resp = s3.list_objects_v2(Bucket=settings.aws_s3_bucket)
+    except ClientError as e:
+        code = e.response.get("Error", {}).get("Code", "Unknown")
+        raise HTTPException(status_code=502, detail=f"Error S3: {code}")
+    items = []
+    for obj in resp.get("Contents", []):
+        key = obj["Key"]
+        meta = {}
+        try:
+            head = s3.head_object(Bucket=settings.aws_s3_bucket, Key=key)
+            meta = head.get("Metadata", {})
+        except ClientError:
+            pass
+        dl_url = s3.generate_presigned_url("get_object",
+            Params={"Bucket": settings.aws_s3_bucket, "Key": key},

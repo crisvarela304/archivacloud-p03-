@@ -119,3 +119,23 @@ export default function App() {
         <div className="flex justify-between items-center px-6 py-4 border-b border-gray-800">
           <h2 className="font-semibold">Archivos <span className="text-gray-500 text-sm ml-1">({files.length})</span></h2>
           <button onClick={fetchFiles} className="text-sm text-gray-400 hover:text-white transition-colors">
+            {loading ? 'Cargando...' : 'Actualizar'}
+          </button>
+        </div>
+        {files.length === 0
+          ? <p className="text-center text-gray-600 py-12 text-sm">El bucket esta vacio, sube tu primer archivo</p>
+          : <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-gray-800 text-gray-500 font-medium text-xs uppercase tracking-wider">
+                  <th className="text-left px-6 py-3">Nombre</th>
+                  <th className="text-left px-4 py-3">Tamano</th>
+                  <th className="text-left px-4 py-3">Fecha</th>
+                  <th className="text-left px-4 py-3">SHA-256</th>
+                  <th className="px-4 py-3"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {files.map(f => (
+                  <tr key={f.key} className="border-b border-gray-800/40 hover:bg-gray-800/20">
+                    <td className="px-6 py-3 font-medium truncate max-w-[180px]" title={f.filename}>{f.filename}</td>
+                    <td className="px-4 py-3 text-gray-400">{fmtSize(f.size_bytes)}</td>
