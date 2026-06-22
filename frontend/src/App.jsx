@@ -139,3 +139,24 @@ export default function App() {
                   <tr key={f.key} className="border-b border-gray-800/40 hover:bg-gray-800/20">
                     <td className="px-6 py-3 font-medium truncate max-w-[180px]" title={f.filename}>{f.filename}</td>
                     <td className="px-4 py-3 text-gray-400">{fmtSize(f.size_bytes)}</td>
+                    <td className="px-4 py-3 text-gray-400 whitespace-nowrap text-xs">{fmtDate(f.last_modified)}</td>
+                    <td className="px-4 py-3 font-mono text-xs text-emerald-400/80" title={f.sha256}>
+                      {f.sha256 ? f.sha256.slice(0, 12) + '...' + f.sha256.slice(-12) : <span className="text-gray-600">sin hash</span>}
+                    </td>
+                    <td className="px-4 py-3 text-right space-x-3">
+                      <a href={f.download_url} download className="text-indigo-400 hover:text-indigo-300 text-xs transition-colors">Descargar</a>
+                      <button onClick={async () => {
+                        if (!window.confirm('Eliminar ' + f.filename + '?')) return
+                        try { await axios.delete('/api/files/' + encodeURIComponent(f.key)); fetchFiles() }
+                        catch (e) { alert(e.response?.data?.detail || e.message) }
+                      }} className="text-red-400 hover:text-red-300 text-xs transition-colors">Eliminar</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+        }
+      </div>
+    </div>
+  )
+}

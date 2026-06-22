@@ -136,3 +136,21 @@ def list_files():
             pass
         dl_url = s3.generate_presigned_url("get_object",
             Params={"Bucket": settings.aws_s3_bucket, "Key": key},
+            ExpiresIn=3600)
+        items.append(FileItem(
+            key=key, filename=key, size_bytes=obj["Size"],
+            last_modified=obj["LastModified"].isoformat(),
+            sha256=meta.get("sha256", ""), download_url=dl_url,
+        ))
+    return items
+
+@app.delete("/api/files/{key:path}", status_code=204)
+def delete_file(key: str):
+    s3 = get_s3_client()
+    decoded = urllib.parse.unquote(key)
+    try:
+        s3.delete_object(Bucket=settings.aws_s3_bucket, Key=decoded)
+    except ClientError as e:
+        code = e.response.get("Error", {}).get("Code", "Unknown")
+        logger.error("Error DELETE: %s", code)
+        raise HTTPException(status_code=502, detail=f"Error S3: {code}")
