@@ -66,6 +66,7 @@ Abre una terminal y ejecuta:
 ```powershell
 cd C:\Users\cris\archivacloud-p03\backend
 .\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
 uvicorn main:app --reload --port 8000
 ```
 
@@ -74,6 +75,7 @@ uvicorn main:app --reload --port 8000
 Abre otra terminal y ejecuta:
 ```powershell
 cd C:\Users\cris\archivacloud-p03\frontend
+npm install
 npm run dev
 ```
 Luego abre tu navegador en `http://localhost:5173`.
