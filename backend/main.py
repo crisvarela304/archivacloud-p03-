@@ -138,7 +138,7 @@ def list_files():
             Params={"Bucket": settings.aws_s3_bucket, "Key": key},
             ExpiresIn=3600)
         items.append(FileItem(
-            key=key, filename=key, size_bytes=obj["Size"],
+            key=key, filename=urllib.parse.unquote(key), size_bytes=obj["Size"],
             last_modified=obj["LastModified"].isoformat(),
             sha256=meta.get("sha256", ""), download_url=dl_url,
         ))
