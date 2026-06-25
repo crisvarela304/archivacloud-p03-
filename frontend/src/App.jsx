@@ -14,10 +14,11 @@ function uploadS3(url, file, hash, onProgress) {
   return new Promise((res, rej) => {
     const xhr = new XMLHttpRequest()
     xhr.upload.onprogress = e => { if (e.lengthComputable) onProgress(Math.round(e.loaded / e.total * 100)) }
-    xhr.onload  = () => xhr.status < 300 ? res(xhr.status) : rej(new Error('S3 error: ' + xhr.status))
+    xhr.onload  = () => xhr.status < 300 ? res(xhr.status) : rej(new Error('S3 error ' + xhr.status + ': ' + xhr.responseText))
     xhr.onerror = () => rej(new Error('Error de red'))
     xhr.open('PUT', url, true)
-    xhr.setRequestHeader('Content-Type', file.type)
+    const ct = file.type || (file.name.endsWith('.mp3') ? 'audio/mpeg' : 'audio/wav')
+    xhr.setRequestHeader('Content-Type', ct)
     if (hash) xhr.setRequestHeader('x-amz-meta-sha256', hash)
     xhr.send(file)
   })

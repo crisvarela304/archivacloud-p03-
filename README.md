@@ -62,37 +62,18 @@ Asegúrate de tener instalados **Python 3.10+** y **Node.js (LTS)**.
 
 ### Paso 1: Configurar el Backend
 
-Abre una terminal de PowerShell:
+Abre una terminal y ejecuta:
 ```powershell
-# 1. Entrar a la carpeta del backend
 cd C:\Users\cris\archivacloud-p03\backend
-
-# 2. Crear y activar entorno virtual
-python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-
-# 3. Instalar dependencias
-pip install -r requirements.txt
-
-# 4. Crear el archivo .env basándose en el de ejemplo
-Copy-Item .env.example .env
-# (ABRIR .env EN VSCODE Y PEGAR LAS CREDENCIALES DE AWS ACADEMY AHI)
-
-# 5. Encender el servidor
 uvicorn main:app --reload --port 8000
 ```
 
-### Paso 2: Configurar el Frontend
+### Ejecutar Frontend
 
-Abre **otra** terminal de PowerShell nueva:
+Abre otra terminal y ejecuta:
 ```powershell
-# 1. Entrar a la carpeta del frontend
 cd C:\Users\cris\archivacloud-p03\frontend
-
-# 2. Instalar librerías de Node
-npm install
-
-# 3. Iniciar entorno de desarrollo
 npm run dev
 ```
 Luego abre tu navegador en `http://localhost:5173`.

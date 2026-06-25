@@ -91,7 +91,7 @@ def health():
 @app.post("/api/upload/presigned-url", response_model=PresignedUrlResponse)
 def generate_presigned_url(body: PresignedUrlRequest):
     s3  = get_s3_client()
-    key = urllib.parse.quote(body.filename, safe="-_.~")
+    key = body.filename
     params: dict[str, Any] = {
         "Bucket": settings.aws_s3_bucket, "Key": key,
         "ContentType": body.content_type,
@@ -138,7 +138,7 @@ def list_files():
             Params={"Bucket": settings.aws_s3_bucket, "Key": key},
             ExpiresIn=3600)
         items.append(FileItem(
-            key=key, filename=urllib.parse.unquote(key), size_bytes=obj["Size"],
+            key=key, filename=key, size_bytes=obj["Size"],
             last_modified=obj["LastModified"].isoformat(),
             sha256=meta.get("sha256", ""), download_url=dl_url,
         ))
@@ -147,9 +147,8 @@ def list_files():
 @app.delete("/api/files/{key:path}", status_code=204)
 def delete_file(key: str):
     s3 = get_s3_client()
-    decoded = urllib.parse.unquote(key)
     try:
-        s3.delete_object(Bucket=settings.aws_s3_bucket, Key=decoded)
+        s3.delete_object(Bucket=settings.aws_s3_bucket, Key=key)
     except ClientError as e:
         code = e.response.get("Error", {}).get("Code", "Unknown")
         logger.error("Error DELETE: %s", code)
