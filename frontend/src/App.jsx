@@ -68,6 +68,14 @@ export default function App() {
         filename: file.name, content_type: ct, file_size: file.size, sha256: h
       })
       await uploadS3(data.url, file, h, setProgress)
+      
+      // Registrar metadata en DynamoDB
+      await axios.post('/api/files/metadata', {
+        id_tabla: file.name,
+        nombre_proyecto: 'Archivo de ArchivaCloud',
+        descripcion: `Size: ${file.size} bytes | SHA256: ${h}`
+      })
+
       setStatus('done')
       setTimeout(fetchFiles, 1200)
     } catch (e) {
